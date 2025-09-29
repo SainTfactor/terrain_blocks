@@ -1,10 +1,10 @@
 // Base tile
 
 module base_tile(
-    size=27,
-    height=2.5, 
-    brim=0.5,
-    brim_depth=0.2){
+    size,
+    height, 
+    brim,
+    brim_depth){
     
         translate([0,0,height/2])
         cube([size,size,height], center=true);
@@ -16,43 +16,44 @@ module base_tile(
 }
 
 module pegs(
-    size=27,
-    peg_diameter=2,
-    peg_depth=1.5,
-    is_male=true,
-    latch_1=true,
-    latch_2=true,
-    latch_3=true,
-    latch_4=true){
-        new_depth= is_male ? -peg_depth/2+0.001 : peg_depth/2-0.001;
+    size,
+    peg_diameter,
+    peg_depth,
+    is_male,
+    latch_1,
+    latch_2,
+    latch_3,
+    latch_4){
+        new_depth = is_male ? -peg_depth/2+0.001 : peg_depth/2-0.001;
+        rad = is_male ? peg_diameter/2 : peg_diameter/2 + 0.1;
         
         if (latch_1) {
             translate([-size/2+peg_diameter,size/2-peg_diameter,new_depth])
-            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+            cylinder(h=peg_depth, r=rad, center=true);
         }
         if (latch_2) {
             translate([size/2-peg_diameter,size/2-peg_diameter,new_depth])
-            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+            cylinder(h=peg_depth, r=rad, center=true);
         }
         if (latch_3) {
             translate([size/2-peg_diameter,-size/2+peg_diameter,new_depth])
-            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+            cylinder(h=peg_depth, r=rad, center=true);
         }
         if (latch_4) {
             translate([-size/2+peg_diameter,-size/2+peg_diameter,new_depth])
-            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+            cylinder(h=peg_depth, r=rad, center=true);
         }
 }
 
 module peggify(
-    size=27,
-    peg_diameter=2,
-    peg_depth=1.5,
-    is_male=true,
-    latch_1=true,
-    latch_2=true,
-    latch_3=true,
-    latch_4=true){
+    size,
+    peg_diameter,
+    peg_depth,
+    is_male,
+    latch_1,
+    latch_2,
+    latch_3,
+    latch_4){
         
         if (is_male) {
             pegs(
@@ -82,12 +83,12 @@ module peggify(
 }
 
 module mag_holes(
-    size=27,
-    mag_diameter=5,
-    mag_top=true,
-    mag_right=true,
-    mag_bottom=true,
-    mag_left=true) {
+    size,
+    mag_diameter,
+    mag_top,
+    mag_right,
+    mag_bottom,
+    mag_left) {
         
         if (mag_top) {
             translate([0, size/2-mag_diameter/2-1,0])
@@ -108,26 +109,32 @@ module mag_holes(
 }
 
 module maggify(
-    size=27,
-    mag_diameter=5,
-    mag_top=true,
-    mag_right=true,
-    mag_bottom=true,
-    mag_left=true){
+    size,
+    mag_diameter,
+    mag_top,
+    mag_right,
+    mag_bottom,
+    mag_left){
         
         difference() {
             children(0);
-            mag_holes();
+            mag_holes(
+                size=size,
+                mag_diameter=mag_diameter,
+                mag_top=mag_top,
+                mag_right=mag_right,
+                mag_bottom=mag_bottom,
+                mag_left=mag_left);
         }
 }
 
 module tile(
     size=27,
-    height=3, 
+    height=4, 
     brim=0.5,
     brim_depth=0.2,
-    peg_diameter=2,
-    peg_depth=1.5,
+    peg_diameter=4,
+    peg_depth=2.5,
     mag_diameter=5.5,
     is_male=false,
     latch_1=true,
@@ -154,7 +161,11 @@ module tile(
                     mag_right=mag_right,
                     mag_bottom=mag_bottom,
                     mag_left=mag_left){
-                    base_tile();
+                    base_tile(
+                        size=size,
+                        height=height, 
+                        brim=brim,
+                        brim_depth=brim_depth);
                 }
         }
 }
