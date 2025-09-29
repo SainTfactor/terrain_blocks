@@ -1,0 +1,168 @@
+// Base tile
+
+module base_tile(
+    size=27,
+    height=2.5, 
+    brim=0.5,
+    brim_depth=0.2){
+    
+        translate([0,0,height/2])
+        cube([size,size,height], center=true);
+        
+        translate([0,0,height/2+brim_depth])
+        cube([size-brim,size-brim,height], center=true);
+        
+        
+}
+
+module pegs(
+    size=27,
+    peg_diameter=2,
+    peg_depth=1.5,
+    is_male=true,
+    latch_1=true,
+    latch_2=true,
+    latch_3=true,
+    latch_4=true){
+        new_depth= is_male ? -peg_depth/2+0.001 : peg_depth/2-0.001;
+        
+        if (latch_1) {
+            translate([-size/2+peg_diameter,size/2-peg_diameter,new_depth])
+            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+        }
+        if (latch_2) {
+            translate([size/2-peg_diameter,size/2-peg_diameter,new_depth])
+            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+        }
+        if (latch_3) {
+            translate([size/2-peg_diameter,-size/2+peg_diameter,new_depth])
+            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+        }
+        if (latch_4) {
+            translate([-size/2+peg_diameter,-size/2+peg_diameter,new_depth])
+            cylinder(h=peg_depth, r=peg_diameter/2, center=true);
+        }
+}
+
+module peggify(
+    size=27,
+    peg_diameter=2,
+    peg_depth=1.5,
+    is_male=true,
+    latch_1=true,
+    latch_2=true,
+    latch_3=true,
+    latch_4=true){
+        
+        if (is_male) {
+            pegs(
+                size=size,
+                peg_diameter=peg_diameter,
+                peg_depth=peg_depth,
+                is_male=is_male,
+                latch_1=latch_1,
+                latch_2=latch_2,
+                latch_3=latch_3,
+                latch_4=latch_4);
+            children(0);
+        } else {
+            difference() {
+                children(0);
+                pegs(
+                    size=size,
+                    peg_diameter=peg_diameter,
+                    peg_depth=peg_depth,
+                    is_male=is_male,
+                    latch_1=latch_1,
+                    latch_2=latch_2,
+                    latch_3=latch_3,
+                    latch_4=latch_4);
+            }
+        }
+}
+
+module mag_holes(
+    size=27,
+    mag_diameter=5,
+    mag_top=true,
+    mag_right=true,
+    mag_bottom=true,
+    mag_left=true) {
+        
+        if (mag_top) {
+            translate([0, size/2-mag_diameter/2-1,0])
+            sphere(r=mag_diameter/2, center=true);
+        }
+        if (mag_right) {
+            translate([size/2-mag_diameter/2-1,0,0])
+            sphere(r=mag_diameter/2, center=true);
+        }
+        if (mag_bottom) {
+            translate([0, -size/2+mag_diameter/2+1,0])
+            sphere(r=mag_diameter/2, center=true);
+        }
+        if (mag_left) {
+            translate([-size/2+mag_diameter/2+1,0,0])
+            sphere(r=mag_diameter/2, center=true);
+        }
+}
+
+module maggify(
+    size=27,
+    mag_diameter=5,
+    mag_top=true,
+    mag_right=true,
+    mag_bottom=true,
+    mag_left=true){
+        
+        difference() {
+            children(0);
+            mag_holes();
+        }
+}
+
+module tile(
+    size=27,
+    height=3, 
+    brim=0.5,
+    brim_depth=0.2,
+    peg_diameter=2,
+    peg_depth=1.5,
+    mag_diameter=5.5,
+    is_male=false,
+    latch_1=true,
+    latch_2=true,
+    latch_3=true,
+    latch_4=true,
+    mag_top=true,
+    mag_right=true,
+    mag_bottom=true,
+    mag_left=true){
+        peggify(
+            size=size,
+            peg_diameter=peg_diameter,
+            peg_depth=peg_depth,
+            is_male=is_male,
+            latch_1=latch_1,
+            latch_2=latch_2,
+            latch_3=latch_3,
+            latch_4=latch_4) {
+                maggify(
+                    size=size,
+                    mag_diameter=mag_diameter,
+                    mag_top=mag_top,
+                    mag_right=mag_right,
+                    mag_bottom=mag_bottom,
+                    mag_left=mag_left){
+                    base_tile();
+                }
+        }
+}
+
+
+$fa = 1;
+$fs = 0.4;
+
+tile();
+translate([30,0,0])
+tile(is_male=true);
