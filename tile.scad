@@ -129,10 +129,10 @@ module maggify(
 }
 
 module tile(
-    size=27,
+    size=28,
     height=4, 
-    brim=0.5,
-    brim_depth=0.2,
+    brim=0.75,
+    brim_depth=0.75,
     peg_diameter=4,
     peg_depth=2.5,
     mag_diameter=5.5,
