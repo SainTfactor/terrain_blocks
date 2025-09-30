@@ -15,32 +15,31 @@ module base_tile(
         
 }
 
-module pegs(
+module peg_holes(
     size,
     peg_diameter,
     peg_depth,
-    is_male,
     latch_1,
     latch_2,
     latch_3,
     latch_4){
-        new_depth = is_male ? -peg_depth/2+0.001 : peg_depth/2-0.001;
-        rad = is_male ? peg_diameter/2 : peg_diameter/2 + 0.1;
+        depth = peg_depth/2-0.001;
+        rad = peg_diameter/2;
         
         if (latch_1) {
-            translate([-size/2+peg_diameter,size/2-peg_diameter,new_depth])
+            translate([-size/2+peg_diameter,size/2-peg_diameter,depth])
             cylinder(h=peg_depth, r=rad, center=true);
         }
         if (latch_2) {
-            translate([size/2-peg_diameter,size/2-peg_diameter,new_depth])
+            translate([size/2-peg_diameter,size/2-peg_diameter,depth])
             cylinder(h=peg_depth, r=rad, center=true);
         }
         if (latch_3) {
-            translate([size/2-peg_diameter,-size/2+peg_diameter,new_depth])
+            translate([size/2-peg_diameter,-size/2+peg_diameter,depth])
             cylinder(h=peg_depth, r=rad, center=true);
         }
         if (latch_4) {
-            translate([-size/2+peg_diameter,-size/2+peg_diameter,new_depth])
+            translate([-size/2+peg_diameter,-size/2+peg_diameter,depth])
             cylinder(h=peg_depth, r=rad, center=true);
         }
 }
@@ -49,36 +48,21 @@ module peggify(
     size,
     peg_diameter,
     peg_depth,
-    is_male,
     latch_1,
     latch_2,
     latch_3,
     latch_4){
         
-        if (is_male) {
-            pegs(
+        difference() {
+            children(0);
+            peg_holes(
                 size=size,
                 peg_diameter=peg_diameter,
                 peg_depth=peg_depth,
-                is_male=is_male,
                 latch_1=latch_1,
                 latch_2=latch_2,
                 latch_3=latch_3,
                 latch_4=latch_4);
-            children(0);
-        } else {
-            difference() {
-                children(0);
-                pegs(
-                    size=size,
-                    peg_diameter=peg_diameter,
-                    peg_depth=peg_depth,
-                    is_male=is_male,
-                    latch_1=latch_1,
-                    latch_2=latch_2,
-                    latch_3=latch_3,
-                    latch_4=latch_4);
-            }
         }
 }
 
@@ -136,7 +120,6 @@ module tile(
     peg_diameter=4,
     peg_depth=2.5,
     mag_diameter=5.5,
-    is_male=false,
     latch_1=true,
     latch_2=true,
     latch_3=true,
@@ -145,11 +128,12 @@ module tile(
     mag_right=true,
     mag_bottom=true,
     mag_left=true){
+        rotate([0,180,0])
+        translate([0,0,-height-brim_depth])
         peggify(
             size=size,
             peg_diameter=peg_diameter,
             peg_depth=peg_depth,
-            is_male=is_male,
             latch_1=latch_1,
             latch_2=latch_2,
             latch_3=latch_3,
@@ -175,5 +159,3 @@ $fa = 1;
 $fs = 0.4;
 
 tile();
-translate([30,0,0])
-tile(is_male=true);
