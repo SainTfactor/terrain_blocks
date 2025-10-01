@@ -26,11 +26,11 @@ module peg_holes(
         depth = peg_depth/2-0.001;
         rad = peg_diameter/2;
         
-        if (latch_1) {
+        if (latch_2) {
             translate([-size/2+peg_diameter,size/2-peg_diameter,depth])
             cylinder(h=peg_depth, r=rad, center=true);
         }
-        if (latch_2) {
+        if (latch_1) {
             translate([size/2-peg_diameter,size/2-peg_diameter,depth])
             cylinder(h=peg_depth, r=rad, center=true);
         }

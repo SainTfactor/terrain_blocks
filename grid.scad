@@ -4,10 +4,10 @@ module grid(tile_size=28, num_wide=3, num_long=3) {
 
     for (x = [0:1:num_wide-1]) {
         for (y = [0:1:num_long-1]){
-            latch_1 = x == (num_wide-1) && y== (num_long-1);
-            latch_2 = x == 0 && y == (num_long-1);
-            latch_3 = x == (num_wide-1) && y == 0;
-            latch_4 = x == 0 && y == 0;
+            latch_1 = x == 0 && y == (num_long-1);
+            latch_2 = x == (num_wide-1) && y== (num_long-1);
+            latch_3 = x == 0 && y == 0;
+            latch_4 = x == (num_wide-1) && y == 0;
             mag_top = y == (num_long-1);
             mag_left = x == (num_wide-1);
             mag_bottom = y == 0;
@@ -35,6 +35,6 @@ $fs = 0.4;
 
 grid(
     tile_size=28,
-    num_wide=5,
-    num_long=6
+    num_wide=2,
+    num_long=2
 );
